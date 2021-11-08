@@ -1,0 +1,17 @@
+# Binaries
+# We need the Release version for the Engine
+bin/Debug-windows
+bin/Release-windows/yaml-cpp
+bin-int
+
+# Visual Studio
+.vs
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+3rdParty/yaml-cpp/**.vcxproj
+3rdParty/yaml-cpp/**.vcxproj.filters
+
+# Visual Studio code
+.vscode
