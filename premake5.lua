@@ -1,5 +1,5 @@
 --Put your llvm directory here
-llvmDir = "G:/llvm-project"
+llvmDir = "D:/llvm-project"
 
 
 workspace "gtreflect"

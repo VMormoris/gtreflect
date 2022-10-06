@@ -1,36 +1,54 @@
 #pragma once
-#include <clang/ASTMatchers/ASTMatchFinder.h>
-#include <filesystem>
-#include <fstream>
 
 #include "reflect.h"
-#include "Builds.h"
+#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include <filesystem>
 
-//Forward Declerations
-namespace YAML { class Node; }
+class Finder : public clang::ast_matchers::MatchFinder::MatchCallback {
+public:
+	std::unordered_map<std::string, Object> Objects;
+	std::unordered_map<std::string, Enum> Enums;
 
-using namespace clang::ast_matchers;
+	void run(const clang::ast_matchers::MatchFinder::MatchResult& result) noexcept override;
 
-//Match finders for every desired reflection type
+protected:
 
-struct EnumFinder : public MatchFinder::MatchCallback {
-	virtual void run(const MatchFinder::MatchResult& res) override;
+	virtual void FoundRecord(const clang::CXXRecordDecl* record) noexcept;
+	virtual void FoundField(const clang::FieldDecl* field) noexcept;
+	virtual void FoundEnum(const clang::EnumDecl* enumdecl) noexcept;
+
+	[[nodiscard]] std::string get_annotation(const clang::Decl* decl) noexcept;
+	[[nodiscard]] FieldType enumtype(const clang::EnumDecl* decl) noexcept;
+	[[nodiscard]] FieldType gettype(const clang::QualType& type) noexcept;
+
 };
 
-struct ClassFinder : public MatchFinder::MatchCallback {
-	ClassFinder(const std::filesystem::path& prjdir, const std::filesystem::path& prj, BuildFace face = BuildFace::Postbuild);
-	~ClassFinder(void) { mHppOut.close(); mCppOut.close(); }
-	virtual void run(const MatchFinder::MatchResult& result) override;
+class PrebuildFinder : public Finder {
+public:
+	PrebuildFinder(const char* filepath) noexcept;
+	void FoundRecord(const clang::CXXRecordDecl* record) noexcept override;
+	void onEndOfTranslationUnit(void) noexcept override;
 private:
-	BuildFace mFace;
-	std::filesystem::path mPrjDir;
-	std::ofstream mCppOut;
-	std::ofstream mHppOut;
+	std::filesystem::path mProjectDir;
+	std::unordered_map<std::string, bool> mHeaders;
 };
 
-struct FieldFinder : public MatchFinder::MatchCallback {
-	virtual void run(const MatchFinder::MatchResult& result) override;
-};
+class PostbuildFinder : public Finder {
+public:
+	PostbuildFinder(const char* filepath) noexcept
+		: mProjectDir(filepath) {}
+	void onEndOfTranslationUnit(void) noexcept override;
+	void FoundRecord(const clang::CXXRecordDecl* record) noexcept override;
+	void FoundField(const clang::FieldDecl* fieldrec) noexcept override;
+	void FoundEnum(const clang::EnumDecl* enumdecl) noexcept override;
 
-//Gets access to the "global" object that is being build during the Runtime
-[[nodiscard]] YAML::Node& GetYAMLObject(void) noexcept;
+private:
+
+	void WriteEnums(void) const noexcept;
+	void WriteObjects(void) noexcept;
+
+	void output_object(std::ofstream& os, const Object& obj) noexcept;
+
+private:
+	std::filesystem::path mProjectDir;
+};
