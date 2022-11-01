@@ -5,7 +5,7 @@
 #include <clang/AST/RecordLayout.h>
 #include "uuid.h"
 
-static std::vector<uint64_t> sOffsets = {};
+//static std::vector<uint64_t> sOffsets = {};
 
 static [[nodiscard]] Object input_object(const YAML::Node& data) noexcept;
 static void input_metadata(const YAML::Node& data, FieldMetadata& meta, FieldType type) noexcept;
@@ -507,18 +507,18 @@ void Finder::FoundRecord(const clang::CXXRecordDecl* record) noexcept
 	Objects.insert({ name, obj });
 
 	//Build offsets for every field
-	sOffsets.clear();
-	const auto* ptr = &record->getASTContext().getASTRecordLayout(record);
-	if (ptr->getFieldCount())
-	{
-		size_t offset = ptr->getFieldOffset(0) / 8;
-		const auto range = record->fields();
-		for (auto fieldptr : range)
-		{
-			sOffsets.push_back(offset);
-			offset += record->getASTContext().getTypeInfo(fieldptr->getType().getTypePtr()).Width / 8;
-		}
-	}
+	//sOffsets.clear();
+	//const auto* ptr = &record->getASTContext().getASTRecordLayout(record);
+	//if (ptr->getFieldCount())
+	//{
+	//	size_t offset = ptr->getFieldOffset(0) / 8;
+	//	const auto range = record->fields();
+	//	for (auto fieldptr : range)
+	//	{
+	//		sOffsets.push_back(offset);
+	//		offset += record->getASTContext().getTypeInfo(fieldptr->getType().getTypePtr()).Width / 8;
+	//	}
+	//}
 }
 
 void Finder::FoundField(const clang::FieldDecl* field) noexcept
@@ -536,7 +536,7 @@ void Finder::FoundField(const clang::FieldDecl* field) noexcept
 	//Retrieve Name & size
 	const auto name = field->getDeclName().getAsString();
 	const size_t size = field->getASTContext().getTypeInfo(field->getType().getTypePtr()).Width / 8;
-	const size_t offset = sOffsets[field->getFieldIndex()];
+	const size_t offset = field->getASTContext().getFieldOffset(field) / 8;//sOffsets[field->getFieldIndex()];
 
 	//Create field
 	const auto owner = field->getParent()->getNameAsString();
