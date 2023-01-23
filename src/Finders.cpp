@@ -434,11 +434,13 @@ void PrebuildFinder::FoundRecord(const clang::CXXRecordDecl* record) noexcept
 	std::ofstream os(mProjectDir / "Exports.cpp", std::ios_base::app);
 	if (obj.Meta.Type == ReflectionType::Component)
 	{
-		os << "\tGAME_API void* Create" << (!metaname.empty() ? metaname : name) <<
+		const std::string writename = !metaname.empty() ? metaname : name;
+		os << "\tGAME_API void* Create" << writename <<
 			"(Entity entity) " << " { return &entity.AddComponent<" << name << ">(); }\n";
-		os << "\tGAME_API void* Get" << (!metaname.empty() ? metaname : name) <<
+		os << "\tGAME_API void* Get" << writename <<
 			"(Entity entity) " << " { return &entity.GetComponent<" << name << ">(); }\n";
-		os << "\tGAME_API bool Has" << (!metaname.empty() ? metaname : name) << "(Entity entity) " << "{ return entity.HasComponent<" << name << ">(); }\n\n";
+		os << "\tGAME_API bool Has" << writename << "(Entity entity) " << "{ return entity.HasComponent<" << name << ">(); }\n";
+		os << "\tGAME_API void Remove" << writename << "(Entity entity) " << "{ entity.RemoveComponent<" << name << ">(); }\n\n";
 	}
 	else
 	{
