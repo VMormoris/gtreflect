@@ -7,11 +7,15 @@
 
 #include "Finders.h"
 
+#define NOMINMAX
+#include <Windows.h>
+
 int argc = 2;
 static constexpr char* argv[2] = { "gtreflect.exe", ".gt/clangdump.hpp" };
 
 int PrebuildRun(const char* filepath);
 int PostbuildRun(const char* filepath);
+void SendOverPipe(const char* pipename, const char* msg);
 
 std::pair<bool, std::string> parseargs(const char** argv);
 
@@ -55,6 +59,7 @@ void CreateClangFile(void);
 int PrebuildRun(const char* filepath)
 {
 	printf("------ Prebuild Step ------\n");
+	SendOverPipe("\\\\.\\pipe\\GreenTeaServer", "BuildStarted");
 	CreateClangFile();
 
 	using namespace clang::ast_matchers;
@@ -105,6 +110,7 @@ int PostbuildRun(const char* filepath)
 	
 	int result = tool.run(newFrontendActionFactory(&finder).get());
 	GTR_ASSERT(result == 0, "Reflection's postbuild step failed!\n");
+	SendOverPipe("\\\\.\\pipe\\GreenTeaServer", "BuildEnded");
 	printf("----------------------------\n");
 	return 0;
 }
@@ -250,4 +256,28 @@ void CreateClangFile(void)
 
 	output.close();
 	printf("Done building clangdump.hpp\n");
+}
+
+void SendOverPipe(const char* pipename, const char* msg)
+{
+	HANDLE pipe = INVALID_HANDLE_VALUE;
+	pipe = CreateFileA
+	(
+		pipename,
+		GENERIC_WRITE,
+		0,
+		nullptr,
+		OPEN_EXISTING,
+		0,
+		nullptr
+	);
+
+	GTR_ASSERT(pipe != INVALID_HANDLE_VALUE, "Failed to connect to named pipe.");
+
+	DWORD bytes;
+	int32_t result = WriteFile(pipe, msg, strlen(msg) + 1, &bytes, nullptr);
+
+	GTR_ASSERT(result, "Failed to send message through the pipe.");
+
+	CloseHandle(pipe);
 }
