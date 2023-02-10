@@ -264,7 +264,7 @@ void SendOverPipe(const char* pipename, const char* msg)
 	pipe = CreateFileA
 	(
 		pipename,
-		GENERIC_WRITE,
+		GENERIC_READ | GENERIC_WRITE,
 		0,
 		nullptr,
 		OPEN_EXISTING,
@@ -272,12 +272,24 @@ void SendOverPipe(const char* pipename, const char* msg)
 		nullptr
 	);
 
-	GTR_ASSERT(pipe != INVALID_HANDLE_VALUE, "Failed to connect to named pipe.");
-
+	if (pipe == INVALID_HANDLE_VALUE)
+	{
+		printf("GreenTea engine is not running\n");
+		return;
+	}
+	
 	DWORD bytes;
 	int32_t result = WriteFile(pipe, msg, strlen(msg) + 1, &bytes, nullptr);
 
 	GTR_ASSERT(result, "Failed to send message through the pipe.");
 
+	char buffer[1024];
+	result = ReadFile(pipe, buffer, 1024, &bytes, nullptr);
+
+	GTR_ASSERT(result, "Failed receiving message from pipe.");
 	CloseHandle(pipe);
+	
+	buffer[bytes] = '\0';
+
+	GTR_ASSERT(strcmp(buffer, "Ok") == 0, "Not valid answer received.");
 }
