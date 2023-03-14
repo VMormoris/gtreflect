@@ -287,6 +287,7 @@ void SendOverPipe(const char* pipename, const char* msg)
 	result = ReadFile(pipe, buffer, 1024, &bytes, nullptr);
 
 	GTR_ASSERT(result, "Failed receiving message from pipe.");
+	DisconnectNamedPipe(pipe);
 	CloseHandle(pipe);
 	
 	buffer[bytes] = '\0';

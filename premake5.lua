@@ -1,5 +1,5 @@
 --Put your llvm directory here
-llvmDir = "D:/llvm-project"
+llvmDir = "D:/dev/llvm-project"
 
 
 workspace "gtreflect"
@@ -27,6 +27,7 @@ LibFiles = {}
 LibFiles["clangTooling"] = "clangTooling.lib"
 LibFiles["clangFrontend"] = "clangFrontend.lib"
 LibFiles["clangSerialization"] = "clangSerialization.lib"
+LibFiles["clangSupport"] = "clangSupport.lib"
 LibFiles["clangASTMatchers"] = "clangASTMatchers.lib"
 LibFiles["clangAST"] = "clangAST.lib"
 LibFiles["clangBasic"] = "clangBasic.lib"
@@ -38,17 +39,28 @@ LibFiles["clangSema"] = "clangSema.lib"
 LibFiles["clangAnalysis"] = "clangAnalysis.lib"
 LibFiles["clangEdit"] = "clangEdit.lib"
 LibFiles["LLVMSupport"] = "LLVMSupport.lib"
+LibFiles["LLVMDebugInfoDWARF"] = "LLVMDebugInfoDWARF.lib"
+LibFiles["LLVMAsmParser"] = "LLVMAsmParser.lib"
+LibFiles["LLVMIRReader"] = "LLVMIRReader.lib"
+LibFiles["LLVMObject"] = "LLVMObject.lib"
+LibFiles["LLVMWindowsDriver"] = "LLVMWindowsDriver.lib"
+LibFiles["LLVMAnalysis"] = "LLVMAnalysis.lib"
 LibFiles["LLVMFrontendOpenMP"] = "LLVMFrontendOpenMP.lib"
 LibFiles["LLVMOption"] = "LLVMOption.lib"
 LibFiles["LLVMCore"] = "LLVMCore.lib"
 LibFiles["LLVMBitReader"] = "LLVMBitReader.lib"
 LibFiles["LLVMBitstreamReader"] = "LLVMBitstreamReader.lib"
 LibFiles["LLVMProfileData"] = "LLVMProfileData.lib"
+LibFiles["clangStaticAnalyzerCore"] = "clangStaticAnalyzerCore.lib"
+LibFiles["LLVMTargetParser"] = "LLVMTargetParser.lib"
+LibFiles["LLVMTextAPI"] = "LLVMTextAPI.lib"
+LibFiles["LLVMTransformUtils"] = "LLVMTransformUtils.lib"
 LibFiles["LLVMDemangle"] = "LLVMDemangle.lib"
 LibFiles["LLVMMC"] = "LLVMMC.lib"
 LibFiles["LLVMMCParser"] = "LLVMMCParser.lib"
 LibFiles["LLVMBinaryFormat"] = "LLVMBinaryFormat.lib"
 LibFiles["LLVMRemarks"] = "LLVMRemarks.lib"
+LibFiles["LLVMScalarOpts"] = "LLVMScalarOpts.lib"
 LibFiles["version"] = "version.lib"
 
 include "3rdParty/yaml-cpp"
@@ -82,12 +94,13 @@ project "gtreflect"
     links
     {
         "yaml-cpp",
-        "%{LibFiles.clangTooling}",
+        "%{LibFiles.clangAST}",
+        "%{LibFiles.clangASTMatchers}",
+        "%{LibFiles.clangBasic}",
         "%{LibFiles.clangFrontend}",
         "%{LibFiles.clangSerialization}",
-        "%{LibFiles.clangASTMatchers}",
-        "%{LibFiles.clangAST}",
-        "%{LibFiles.clangBasic}",
+        "%{LibFiles.clangTooling}",
+        "%{LibFiles.clangSupport}",
         "%{LibFiles.clangLex}",
         "%{LibFiles.clangDriver}",
         "%{LibFiles.clangParse}",
@@ -96,8 +109,18 @@ project "gtreflect"
         "%{LibFiles.clangAnalysis}",
         "%{LibFiles.clangEdit}",
         "%{LibFiles.LLVMSupport}",
+        "%{LibFiles.LLVMDebugInfoDWARF}",
+        "%{LibFiles.LLVMWindowsDriver}",
+        "%{LibFiles.LLVMAnalysis}",
         "%{LibFiles.LLVMFrontendOpenMP}",
+        "%{LibFiles.LLVMAsmParser}",
+        "%{LibFiles.LLVMIRReader}",
+        "%{LibFiles.LLVMObject}",
         "%{LibFiles.LLVMOption}",
+        "%{LibFiles.clangStaticAnalyzerCore}",
+        "%{LibFiles.LLVMTargetParser}",
+        "%{LibFiles.LLVMTextAPI}",
+        "%{LibFiles.LLVMTransformUtils}",
         "%{LibFiles.LLVMCore}",
         "%{LibFiles.LLVMBitReader}",
         "%{LibFiles.LLVMBitstreamReader}",
@@ -107,6 +130,7 @@ project "gtreflect"
         "%{LibFiles.LLVMMCParser}",
         "%{LibFiles.LLVMBinaryFormat}",
         "%{LibFiles.LLVMRemarks}",
+        "%{LibFiles.LLVMScalarOpts}",
         "%{LibFiles.version}",
     }
 
