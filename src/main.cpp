@@ -1,11 +1,14 @@
-#include "clang/Frontend/FrontendActions.h"
-#include "clang/Tooling/CommonOptionsParser.h"
-#include "llvm/Support/CommandLine.h"
-#include "clang/Frontend/ASTConsumers.h"
-#include "clang/Tooling/Tooling.h"
-#include <clang/AST/Type.h>
-
 #include "Finders.h"
+
+#pragma warning(push)
+#pragma warning(disable: 4267 4244)
+#include <clang/Frontend/FrontendActions.h>
+#include <clang/Tooling/CommonOptionsParser.h>
+#include <llvm/Support/CommandLine.h>
+#include <clang/Frontend/ASTConsumers.h>
+#include <clang/Tooling/Tooling.h>
+#include <clang/AST/Type.h>
+#pragma warning(pop)
 
 #define NOMINMAX
 #include <Windows.h>
@@ -279,7 +282,7 @@ void SendOverPipe(const char* pipename, const char* msg)
 	}
 	
 	DWORD bytes;
-	int32_t result = WriteFile(pipe, msg, strlen(msg) + 1, &bytes, nullptr);
+	int32_t result = WriteFile(pipe, msg, (DWORD)strlen(msg) + 1, &bytes, nullptr);
 
 	GTR_ASSERT(result, "Failed to send message through the pipe.");
 

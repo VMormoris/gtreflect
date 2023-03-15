@@ -1,8 +1,14 @@
 #pragma once
 
 #include "reflect.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
 #include <filesystem>
+
+#pragma warning(push)
+#pragma warning(disable: 4146)
+#pragma warning(disable: 4244 4267 4291)
+#pragma warning(disable: 4624)
+#include <clang/ASTMatchers/ASTMatchFinder.h>
+#pragma warning(pop)
 
 class Finder : public clang::ast_matchers::MatchFinder::MatchCallback {
 public:

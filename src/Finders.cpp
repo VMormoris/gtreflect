@@ -1,11 +1,13 @@
 #include "Finders.h"
 #include "AnnotationParser.h"
-#include <fstream>
-
-#include <clang/AST/RecordLayout.h>
 #include "uuid.h"
 
-//static std::vector<uint64_t> sOffsets = {};
+#include <fstream>
+
+#pragma warning(push)
+#pragma warning(disable: 4267)
+#include <clang/AST/RecordLayout.h>
+#pragma warning(pop)
 
 static [[nodiscard]] Object input_object(const YAML::Node& data) noexcept;
 static void input_metadata(const YAML::Node& data, FieldMetadata& meta, FieldType type) noexcept;

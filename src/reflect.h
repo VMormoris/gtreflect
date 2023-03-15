@@ -223,7 +223,7 @@ struct Enum {
 
 	Enum(void) = default;
 	Enum(const std::string& name, size_t size) noexcept
-		: Meta(name, size, ReflectionType::Enumaration), Name(name) {}
+		: Meta(name, size, ReflectionType::Enumaration), Name(name), Type(FieldType::Unknown) {}
 	Enum(const std::string& name, size_t size, FieldType type) noexcept 
 		: Meta(name, size, ReflectionType::Enumaration), Name(name), Type(type) {}
 };
