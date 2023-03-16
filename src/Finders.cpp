@@ -41,8 +41,7 @@ void PostbuildFinder::WriteObjects(void) noexcept
 				break;
 			if (loaded == 0)
 			{
-				unsigned long type = stoul(line);
-				GTR_ASSERT( type == 2 || type == 3 || type == 4, "Asset type isn't NativeScript");
+				GTR_ASSERT(stoul(line) == 4, "Asset type isn't NativeScript");
 			}
 			else if (loaded == 1)
 				id = line;
