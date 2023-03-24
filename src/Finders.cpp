@@ -99,7 +99,7 @@ void PostbuildFinder::WriteObjects(void) noexcept
 
 	//Delete files that are no longer in use
 	for (const auto& [filepath, pair] : Inputs)
-		std::remove(filepath.c_str());
+		std::remove((mProjectDir / "Assets" / filepath).string().c_str());
 
 	//Write objects that changes
 	for (const auto& [filepath, pair] : Outputs)
