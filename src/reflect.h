@@ -109,7 +109,7 @@ struct Field {
 		if (Offset != other.Offset) return false;
 		if (Meta.Size != other.Meta.Size) return false;
 		if (Meta.ValueType != other.Meta.ValueType) return false;
-		if (Meta.Name.compare(Meta.Name) != 0) return false;
+		if (Meta.Name.compare(other.Meta.Name) != 0) return false;
 		switch (Meta.ValueType)
 		{
 		case FieldType::Char:
